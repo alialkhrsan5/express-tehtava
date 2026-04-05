@@ -14,7 +14,11 @@ const getCatById = (req, res) => {
 };
 
 const postCat = (req, res) => {
-  const result = addCat(req.body);
+  const { cat_name, weight, owner, birthdate } = req.body;
+  const filename = req.file ? req.file.filename : null;
+
+  const result = addCat({ cat_name, weight, owner, birthdate, filename });
+  
   if (result.cat_id) {
     res.status(201);
     res.json({ message: 'New cat added.', result });
@@ -23,7 +27,6 @@ const postCat = (req, res) => {
   }
 };
 
-// Opettajan tehtävänannon mukaiset palautukset PUT- ja DELETE-pyynnöille
 const putCat = (req, res) => {
   res.json({message: 'Cat item updated.'});
 };

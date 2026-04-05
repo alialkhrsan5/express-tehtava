@@ -1,5 +1,5 @@
 import express from 'express';
-import api from './api/index.js'; // Tuodaan äsken tehty API-reititin
+import api from './api/index.js'; 
 
 const app = express();
 
@@ -15,7 +15,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to my REST API!');
 });
 
-// Otetaan uusi reititinjärjestelmä käyttöön! Kaikki alkaa '/api/v1'
 app.use('/api/v1', api);
 
 export default app;
