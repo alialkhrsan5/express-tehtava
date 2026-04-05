@@ -7,13 +7,14 @@ import {
   putCat,
   deleteCat,
 } from '../controllers/cat-controller.js';
+import { createThumbnail } from '../../middlewares/upload.js'; 
 
 const catRouter = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 catRouter.route('/')
   .get(getCat)
-  .post(upload.single('cat'), postCat);
+  .post(upload.single('cat'), createThumbnail, postCat); 
 
 catRouter.route('/:id')
   .get(getCatById)
