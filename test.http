@@ -1,4 +1,23 @@
-POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
+### 1. KIRJAUDU SISÄÄN
+# @name login
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "lopullinen_testi",
+    "password": "salaisuus123"
+}
+
+### TALLENNETAAN TOKEN MUUTTUJAAN
+@token = {{login.response.body.token}}
+
+### 2
+GET http://localhost:3000/api/v1/auth/me
+Authorization: Bearer {{token}}
+
+### 3. LISÄÄ KISSA
+POST http://localhost:3000/api/v1/cats
+Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
@@ -12,7 +31,7 @@ Content-Disposition: form-data; name="weight"
 --MyBoundary
 Content-Disposition: form-data; name="owner"
 
-3602
+38
 --MyBoundary
 Content-Disposition: form-data; name="birthdate"
 
@@ -23,3 +42,13 @@ Content-Type: image/jpeg
 
 < ./public/kissa.jpg
 --MyBoundary--
+### LUODAAN VARMUUDEN VUOKSI UUSI KÄYTTÄJÄ
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+    "name": "Uusi Testaaja",
+    "username": "lopullinen_testi",
+    "password": "salaisuus123",
+    "role": "user"
+}

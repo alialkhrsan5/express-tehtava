@@ -9,20 +9,22 @@ import {
   deleteCat,
 } from '../controllers/cat-controller.js';
 import { createThumbnail } from '../../middlewares/upload.js';
+import { authenticateToken } from '../../middlewares/authentication.js'; // Tuodaan vartija
 
 const catRouter = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 catRouter.route('/')
   .get(getCat)
-  .post(upload.single('cat'), createThumbnail, postCat);
+  // Lisätään authenticateToken ennen kissa-postausta!
+  .post(authenticateToken, upload.single('cat'), createThumbnail, postCat);
 
 catRouter.route('/user/:id')
   .get(getCatsByUserId);
 
 catRouter.route('/:id')
   .get(getCatById)
-  .put(putCat)
-  .delete(deleteCat);
+  .put(authenticateToken, putCat)    // Vain kirjautuneille
+  .delete(authenticateToken, deleteCat); // Vain kirjautuneille
 
 export default catRouter;

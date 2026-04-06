@@ -21,32 +21,40 @@ const getCatsByUserId = async (req, res) => {
 const postCat = async (req, res) => {
   const { cat_name, weight, owner, birthdate } = req.body;
   const filename = req.file ? req.file.filename : null;
+  const catOwner = owner || res.locals.user.user_id;
 
-  const result = await addCat({ cat_name, weight, owner, birthdate, filename });
+  const result = await addCat({ 
+    cat_name, 
+    weight, 
+    owner: catOwner, 
+    birthdate, 
+    filename 
+  });
   
   if (result.cat_id) {
-    res.status(201);
-    res.json({ message: 'New cat added.', result });
+    res.status(201).json({ message: 'New cat added.', result });
   } else {
     res.sendStatus(400);
   }
 };
 
 const putCat = async (req, res) => {
-  const result = await modifyCat(req.body, req.params.id);
+  // Lähetetään res.locals.user mukana tarkistusta varten
+  const result = await modifyCat(req.body, req.params.id, res.locals.user);
   if (result) {
     res.json({message: 'Cat item updated.'});
   } else {
-    res.sendStatus(400);
+    res.status(403).json({message: 'Not authorized or cat not found'});
   }
 };
 
 const deleteCat = async (req, res) => {
-  const result = await removeCat(req.params.id);
+  // Lähetetään res.locals.user mukana tarkistusta varten
+  const result = await removeCat(req.params.id, res.locals.user);
   if (result) {
     res.json({message: 'Cat item deleted.'});
   } else {
-    res.sendStatus(400);
+    res.status(403).json({message: 'Not authorized or cat not found'});
   }
 };
 
