@@ -26,10 +26,8 @@ const addCat = async (cat) => {
 const modifyCat = async (cat, id, user) => {
   let sql;
   if (user.role === 'admin') {
-    // Admin saa muokata kaikkia
     sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [cat, id]);
   } else {
-    // Tavallinen käyttäjä vain omiaan
     sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ? AND owner = ?`, [cat, id, user.user_id]);
   }
   const [rows] = await promisePool.execute(sql);
@@ -40,10 +38,8 @@ const removeCat = async (id, user) => {
   let sql;
   const params = [id];
   if (user.role === 'admin') {
-    // Admin saa poistaa kaikki
     sql = `DELETE FROM wsk_cats WHERE cat_id = ?`;
   } else {
-    // Tavallinen käyttäjä vain omansa
     sql = `DELETE FROM wsk_cats WHERE cat_id = ? AND owner = ?`;
     params.push(user.user_id);
   }

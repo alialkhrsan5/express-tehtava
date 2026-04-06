@@ -18,28 +18,33 @@ const getCatsByUserId = async (req, res) => {
   res.json(cats);
 };
 
-const postCat = async (req, res) => {
+const postCat = async (req, res, next) => { // Lisätty next
+
+  if (!req.file) {
+    const error = new Error('Invalid or missing file');
+    error.status = 400;
+    return next(error);
+  }
+
   const { cat_name, weight, owner, birthdate } = req.body;
-  const filename = req.file ? req.file.filename : null;
+  const filename = req.file.filename;
   const catOwner = owner || res.locals.user.user_id;
 
-  const result = await addCat({ 
-    cat_name, 
-    weight, 
-    owner: catOwner, 
-    birthdate, 
-    filename 
-  });
-  
-  if (result.cat_id) {
+  try {
+    const result = await addCat({ 
+      cat_name, 
+      weight, 
+      owner: catOwner, 
+      birthdate, 
+      filename 
+    });
     res.status(201).json({ message: 'New cat added.', result });
-  } else {
-    res.sendStatus(400);
+  } catch (err) {
+    next(err); 
   }
 };
 
 const putCat = async (req, res) => {
-  // Lähetetään res.locals.user mukana tarkistusta varten
   const result = await modifyCat(req.body, req.params.id, res.locals.user);
   if (result) {
     res.json({message: 'Cat item updated.'});
@@ -49,7 +54,6 @@ const putCat = async (req, res) => {
 };
 
 const deleteCat = async (req, res) => {
-  // Lähetetään res.locals.user mukana tarkistusta varten
   const result = await removeCat(req.params.id, res.locals.user);
   if (result) {
     res.json({message: 'Cat item deleted.'});

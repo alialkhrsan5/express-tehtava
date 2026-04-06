@@ -1,17 +1,13 @@
-import cors from 'cors'; 
+import cors from 'cors';
 import express from 'express';
-import api from './api/index.js'; 
+import api from './api/index.js';
+import { errorHandler, notFoundHandler } from './middlewares/error-handlers.js'; // Tuodaan uudet
 
 const app = express();
 
-
-app.use(cors()); 
-
-// Parses incoming requests with JSON payloads
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
-// Staattisten tiedostojen tarjoilu
 app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
@@ -19,5 +15,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1', api);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
