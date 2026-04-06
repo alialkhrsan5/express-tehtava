@@ -1,4 +1,3 @@
-### 1. LUODAAN UUSI KÄYTTÄJÄ (Huom: Nyt sähköposti on pakollinen ja salasana min 8 merkkiä)
 # @name register
 POST http://localhost:3000/api/v1/users
 Content-Type: application/json
@@ -11,7 +10,6 @@ Content-Type: application/json
     "role": "user"
 }
 
-### 2. KIRJAUDU SISÄÄN
 # @name login
 POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
@@ -21,14 +19,11 @@ Content-Type: application/json
     "password": "salaisuus123"
 }
 
-### TALLENNETAAN TOKEN MUUTTUJAAN
 @token = {{login.response.body.token}}
 
-### 3. TESTAA TOKEN (ME-REITTI)
 GET http://localhost:3000/api/v1/auth/me
 Authorization: Bearer {{token}}
 
-### 4. LISÄÄ KISSA
 POST http://localhost:3000/api/v1/cats
 Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=MyBoundary
